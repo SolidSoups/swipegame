@@ -3,37 +3,43 @@ import { useDrag } from "@use-gesture/react";
 import { Text } from "@react-three/drei";
 
 export default function Card({ prompt, onSwipe }) {
-  const [{ x }, api] = useSpring(() => ({
+  const [{ x, y }, api] = useSpring(() => ({
     x: 0,
-    config: { tension: 300, friction: 20 },
+    y: 0,
+    config: { tension: 200, friction: 30 },
   }));
 
   const THRESHOLD = 1.0;
 
-  const bind = useDrag(({ down, movement: [mx], velocity: [vx] }) => {
+  const bind = useDrag(({ down, movement: [mx, my], velocity: [vx, vy] }) => {
     const k = Math.pow(window.innerWidth * 0.5, 0.85);
-    const eased = (Math.sign(mx) * Math.pow(Math.abs(mx), 0.85)) / k;
+    const easedX = (Math.sign(mx) * Math.pow(Math.abs(mx), 0.85)) / k;
+    const easedY = my * -0.002;
+    const clampedY = Math.max(-0.8, Math.min(0.8, easedY));
 
     if (!down) {
-      const momentumTarget = eased + vx * 0.1; // add velocity based momentum
-      if (Math.abs(momentumTarget) > THRESHOLD) {
-        const direction = momentumTarget > 0 ? "yes" : "no";
+      const momentumTargetX = easedX + vx * 0.1; // add velocity based momentum
+      const momentumTargetY = clampedY + vy * 0.002;
+
+      if (Math.abs(momentumTargetX) > THRESHOLD) {
+        const direction = momentumTargetX > 0 ? "yes" : "no";
 
         // animate the card off-screen
         api.start({
-          x: momentumTarget > 0 ? 6 : -6,
+          x: momentumTargetX > 0 ? 6 : -6,
+          y: 0, // snap Y back on swipe
           onRest: () => onSwipe(direction),
         });
       } else {
-        api.start({ x: 0 });
+        api.start({ x: 0, y: momentumTargetY });
       }
     } else {
-      api.start({ x: eased });
+      api.start({ x: easedX, y: clampedY });
     }
   });
 
   return (
-    <animated.mesh position-x={x} {...bind()}>
+    <animated.mesh position-x={x} position-y={y} {...bind()}>
       <planeGeometry args={[3, 4]} />
       <animated.meshStandardMaterial
         color={
