@@ -8,7 +8,7 @@ export default function Card({ prompt, onSwipe }) {
     config: { tension: 300, friction: 20 },
   }));
 
-  const THRESHOLD = 1.5;
+  const THRESHOLD = 1.2;
 
   const bind = useDrag(({ down, movement: [mx], velocity: [vx] }) => {
     const k = Math.pow(window.innerWidth * 0.5, 0.85);
@@ -25,7 +25,7 @@ export default function Card({ prompt, onSwipe }) {
           onRest: () => onSwipe(direction),
         });
       } else {
-        api.start({ x: momentumTarget });
+        api.start({ x: 0 });
       }
     } else {
       api.start({ x: eased });
