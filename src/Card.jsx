@@ -8,7 +8,7 @@ export default function Card({ prompt, onSwipe }) {
     config: { tension: 300, friction: 20 },
   }));
 
-  const THRESHOLD = 1.2;
+  const THRESHOLD = 1.0;
 
   const bind = useDrag(({ down, movement: [mx], velocity: [vx] }) => {
     const k = Math.pow(window.innerWidth * 0.5, 0.85);
