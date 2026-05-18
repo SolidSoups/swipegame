@@ -10,7 +10,7 @@ export default function Card({ prompt, onSwipe }) {
     config: { tension: 200, friction: 30 },
   }));
 
-  const THRESHOLD = 0.8;
+  const THRESHOLD = 1.0;
   const Y_BORDER = 0.6;
   const FLYOFF_DIST = 8;
 
