@@ -20,7 +20,10 @@ export default function App() {
   };
 
   return (
-    <Canvas style={{ height: "100vh", background: "#111" }}>
+    <Canvas
+      style={{ height: "100dvh", background: "#111", touchAction: "none" }}
+      dpr={[1, 2]}
+    >
       <ambientLight intensity={0.6} />
       <pointLight position={[5, 5, 5]} />
       {i < PROMPTS.length ? (
