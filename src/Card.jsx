@@ -10,13 +10,25 @@ export default function Card({ prompt, onSwipe }) {
 
   const THRESHOLD = 1.5;
 
-  const bind = useDrag(({ down, movement: [mx] }) => {
+  const bind = useDrag(({ down, movement: [mx], velocity: [vx] }) => {
     const k = Math.pow(window.innerWidth * 0.5, 0.85);
     const eased = (Math.sign(mx) * Math.pow(Math.abs(mx), 0.85)) / k;
-    if (!down && Math.abs(eased) > THRESHOLD) {
-      onSwipe(mx > 0 ? "yes" : "no");
+
+    if (!down) {
+      const momentumTarget = eased + vx * 0.1; // add velocity based momentum
+      if (Math.abs(momentumTarget) > THRESHOLD) {
+        const direction = momentumTarget > 0 ? "yes" : "no";
+
+        // animate the card off-screen
+        api.start({
+          x: momentumTarget > 0 ? 6 : -6,
+          onRest: () => onSwipe(direction),
+        });
+      } else {
+        api.start({ x: momentumTarget });
+      }
     } else {
-      api.start({ x: down ? eased : 0 });
+      api.start({ x: eased });
     }
   });
 
