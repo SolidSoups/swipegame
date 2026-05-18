@@ -8,7 +8,7 @@ export default function Card({ prompt, onSwipe }) {
   const THRESHOLD = 1.5;
 
   const bind = useDrag(({ down, movement: [mx] }) => {
-    const k = window.innerWidth * 0.5;
+    const k = Math.pow(window.innerWidth * 0.5, 0.85);
     const eased = (Math.sign(mx) * Math.pow(Math.abs(mx), 0.85)) / k;
     if (!down && Math.abs(eased) > THRESHOLD) {
       onSwipe(mx > 0 ? "yes" : "no");
