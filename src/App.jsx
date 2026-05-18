@@ -26,6 +26,9 @@ export default function App() {
     >
       <ambientLight intensity={0.6} />
       <pointLight position={[5, 5, 5]} />
+      <Text position={[0, 3.5, 0]} fontSize={0.15} color="#888">
+        {__GIT_COMMIT__}
+      </Text>
       {i < PROMPTS.length ? (
         <Card key={i} prompt={PROMPTS[i]} onSwipe={handleSwipe} />
       ) : (
