@@ -3,7 +3,10 @@ import { useDrag } from "@use-gesture/react";
 import { Text } from "@react-three/drei";
 
 export default function Card({ prompt, onSwipe }) {
-  const [{ x }, api] = useSpring(() => ({ x: 0 }));
+  const [{ x }, api] = useSpring(() => ({
+    x: 0,
+    config: { tension: 300, friction: 20 },
+  }));
 
   const THRESHOLD = 1.5;
 
