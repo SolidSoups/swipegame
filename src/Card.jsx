@@ -1,6 +1,7 @@
 import { useSpring, animated } from "@react-spring/three";
 import { useDrag } from "@use-gesture/react";
 import { Text } from "@react-three/drei";
+import { useEffect } from "react";
 import { Vector2 } from "three";
 
 export default function Card({ prompt, onSwipe }) {
@@ -10,9 +11,15 @@ export default function Card({ prompt, onSwipe }) {
     config: { tension: 200, friction: 10 },
   }));
 
+  useEffect(() => {
+    console.log("Resetting card to zero");
+    api.stop();
+    api.start({ x: 0, y: 0, immediate: true });
+  }, [prompt, api]);
+
   const THRESHOLD = 1.0;
   const Y_BORDER = 0.6;
-  const FLYOFF_DIST = 8;
+  const FLYOFF_DIST = 6;
 
   const bind = useDrag(({ down, movement: [mx, my], velocity: [vx, vy] }) => {
     const linearX = mx / (window.innerWidth * 0.5);
