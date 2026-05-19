@@ -67,7 +67,7 @@ export default function Card({ prompt, onSwipe }) {
         }
       />
       <Text position={[0, 0, 0.01]} fontSize={0.3} color="black">
-        {prompt}
+        {prompt.text}
       </Text>
     </animated.mesh>
   );
