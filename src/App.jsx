@@ -2,6 +2,7 @@ import { Canvas } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
 import { useState } from "react";
 import Card from "./Card";
+import { useCardDeck } from "./useCardDeck";
 
 const PROMPTS = [
   "eat a raw onion?",
@@ -12,12 +13,16 @@ const PROMPTS = [
 ];
 
 export default function App() {
-  const [i, setI] = useState(0);
+  const { prompt, advance } = useCardDeck(PROMPTS);
 
   const handleSwipe = (answer) => {
-    console.log(PROMPTS[i], "->", answer);
-    setI((n) => n + 1);
+    console.log(`User answered: ${answer}`);
+    advance();
   };
+
+  if (!prompt) {
+    return <div>Game Over!</div>;
+  }
 
   return (
     <Canvas
@@ -29,13 +34,7 @@ export default function App() {
       <Text position={[0, 3.5, 0]} fontSize={0.15} color="#888">
         {"prototype-" + __GIT_COMMIT__}
       </Text>
-      {i < PROMPTS.length ? (
-        <Card key={i} prompt={PROMPTS[i]} onSwipe={handleSwipe} />
-      ) : (
-        <Text fontSize={0.4} color="white">
-          done
-        </Text>
-      )}
+      <Card prompt={prompt} onSwipe={handleSwipe} />
     </Canvas>
   );
 }
