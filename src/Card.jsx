@@ -7,7 +7,7 @@ export default function Card({ prompt, onSwipe }) {
   const [{ x, y }, api] = useSpring(() => ({
     x: 0,
     y: 0,
-    config: { tension: 200, friction: 30 },
+    config: { tension: 200, friction: 10 },
   }));
 
   const THRESHOLD = 1.0;
@@ -15,14 +15,13 @@ export default function Card({ prompt, onSwipe }) {
   const FLYOFF_DIST = 8;
 
   const bind = useDrag(({ down, movement: [mx, my], velocity: [vx, vy] }) => {
-    const k = Math.pow(window.innerWidth * 0.5, 0.85);
-    const easedX = (Math.sign(mx) * Math.pow(Math.abs(mx), 0.85)) / k;
-    const easedY = -(Math.sign(my) * Math.pow(Math.abs(my), 0.85)) / k;
-    const clampedY = Math.max(-Y_BORDER, Math.min(Y_BORDER, easedY));
+    const linearX = mx / (window.innerWidth * 0.5);
+    const linearY = -(my / (window.innerWidth * 0.5));
+    const clampedY = Math.max(-Y_BORDER, Math.min(Y_BORDER, linearY));
 
     if (!down) {
       const momentumTarget = new Vector2(
-        easedX + vx * 0.1,
+        linearX + vx * 0.1,
         clampedY + vy * 0.002,
       );
 
@@ -44,7 +43,7 @@ export default function Card({ prompt, onSwipe }) {
         api.start({ x: 0, y: 0 });
       }
     } else {
-      api.start({ x: easedX, y: clampedY });
+      api.start({ x: linearX, y: clampedY });
     }
   });
 
