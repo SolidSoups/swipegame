@@ -17,7 +17,7 @@ export default function Card({ prompt, onSwipe }) {
     api.start({ x: 0, y: 0, immediate: true });
   }, [prompt, api]);
 
-  const THRESHOLD = 1.0;
+  const THRESHOLD = 0.7;
   const Y_BORDER = 0.6;
   const FLYOFF_DIST = 6;
 
