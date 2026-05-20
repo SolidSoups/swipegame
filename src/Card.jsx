@@ -8,7 +8,7 @@ export default function Card({ prompt, onSwipe }) {
   const [{ x, y }, api] = useSpring(() => ({
     x: 0,
     y: 0,
-    config: { tension: 200, friction: 10 },
+    config: { tension: 200, friction: 100 },
   }));
 
   useEffect(() => {
