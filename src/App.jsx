@@ -57,10 +57,20 @@ export default function App() {
       <ambientLight intensity={0.6} />
       <pointLight position={[5, 5, 5]} />
 
-      {/* DEBUG TEXT */}
+      {/* DEBUG APP VERSION */}
       <Text position={[-1, 3.5, 0]} fontSize={0.15} color="#888" anchorX="left">
         {"prototype-" + __GIT_COMMIT__}
       </Text>
+
+      <Text
+        position={[0, 2.8, 0]}
+        fontSize={0.4}
+        color="#8888"
+        anchorX="center"
+      >
+        {currentPlayer().name}
+      </Text>
+      {/* DEBUG PLAYERS */}
       {players().map((player, i) => (
         <Text
           key={player.name}
