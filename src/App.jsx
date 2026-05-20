@@ -6,27 +6,26 @@ import { useCardDeck } from "./useCardDeck";
 import { usePlayerManager } from "./player/usePlayerManager";
 
 const PROMPTS = [
-  { text: "eat a raw onion?", points: { no: 10, yes: -10 } },
-  { text: "skydive?", points: { no: -10, yes: 20 } },
-  { text: "live without coffee?", points: { no: 5, yes: 10 } },
-  { text: "die?", points: { no: 100, yes: 0 } },
-  { text: "pet sunshine?", points: { no: 0, yes: 100 } },
-  { text: "swim in lava?", points: { no: 15, yes: -30 } },
-  { text: "learn to code?", points: { no: -5, yes: 25 } },
-  { text: "travel the world?", points: { no: 10, yes: 30 } },
-  { text: "give up social media?", points: { no: 5, yes: 20 } },
-  { text: "become a vegan?", points: { no: 8, yes: 15 } },
-  { text: "write a book?", points: { no: 12, yes: 35 } },
-  { text: "learn an instrument?", points: { no: 10, yes: 25 } },
-  { text: "start a business?", points: { no: 5, yes: 40 } },
-  { text: "run a marathon?", points: { no: 8, yes: 20 } },
-  { text: "speak another language?", points: { no: 10, yes: 30 } },
+  { text: "eat a raw onion?" },
+  { text: "skydive?" },
+  { text: "live without coffee?" },
+  { text: "die?" },
+  { text: "pet sunshine?" },
+  { text: "swim in lava?" },
+  { text: "learn to code?" },
+  { text: "travel the world?" },
+  { text: "give up social media?" },
+  { text: "become a vegan?" },
+  { text: "write a book?" },
+  { text: "learn an instrument?" },
+  { text: "start a business?" },
+  { text: "run a marathon?" },
+  { text: "speak another language?" },
 ];
 
 const NAMES = ["Elias", "Roza", "Sunshine", "Pearl"];
 
 export default function App() {
-  const [points, setPoints] = useState(0);
   const { prompt, advance } = useCardDeck(PROMPTS);
   const { players, reset, nextTurn, currentPlayer } = usePlayerManager(NAMES);
   console.log("Players:", players);
@@ -35,8 +34,11 @@ export default function App() {
     console.log(`User answered: ${answer}`);
 
     // add points
-    if (answer == "yes") setPoints(points + prompt.points.yes);
-    else setPoints(points + prompt.points.no);
+    if (answer == "yes") {
+      currentPlayer().addPrompt(prompt);
+    } else {
+      // "no": noop for now
+    }
 
     nextTurn();
 
@@ -62,22 +64,14 @@ export default function App() {
       {players().map((player, i) => (
         <Text
           key={player.name}
-          position={[-1, 3.15 - i * 0.3, 0]}
+          position={[-1, -2.4 - i * 0.3, 0]}
           fontSize={0.12}
           color="#888"
           anchorX="left"
         >
-          {(currentPlayer().name == player.name ? "+ " : "  ") +
-            player.name +
-            ": " +
-            player.points}
+          {`${currentPlayer().name == player.name ? "+" : " "} Name: ${player.name}, Cards: ${player.score()}`}
         </Text>
       ))}
-
-      {/* Draw debug points */}
-      <Text position={[0, -3.5, 0]} fontSize={0.15} color="#ff4444">
-        {"aura: " + points}
-      </Text>
 
       {/* Draw the actual card */}
       <Card prompt={prompt} onSwipe={handleSwipe} />

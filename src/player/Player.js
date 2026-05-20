@@ -1,19 +1,20 @@
 // simple definition to track a player and their score
 export class Player {
+  /** @type {string} */
+  name;
+  /** @type {Array} */
+  ownedPrompts;
+
   constructor(name) {
     this.name = name;
-    this.points = 0;
+    this.ownedPrompts = [];
   }
 
-  getName() {
-    return this.name;
+  addPrompt(prompt) {
+    this.ownedPrompts.push(prompt);
   }
 
-  getScore() {
-    return this.score;
-  }
-
-  addScore(value) {
-    this.score += value;
+  score() {
+    return this.ownedPrompts.length;
   }
 }
