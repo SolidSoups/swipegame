@@ -1,7 +1,7 @@
 import { useSpring, animated } from "@react-spring/three";
 import { useDrag } from "@use-gesture/react";
 import { Text } from "@react-three/drei";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Vector2 } from "three";
 
 export default function Card({ prompt, onSwipe }) {
@@ -10,6 +10,9 @@ export default function Card({ prompt, onSwipe }) {
     y: 0,
     config: { tension: 210, friction: 20 },
   }));
+
+  const grabX = useRef(0);
+  const grabY = useRef(0);
 
   useEffect(() => {
     console.log("Resetting card to zero");
@@ -21,15 +24,20 @@ export default function Card({ prompt, onSwipe }) {
   const Y_BORDER = 0.6;
   const FLYOFF_DIST = 6;
 
-  const bind = useDrag(({ down, movement: [mx, my], velocity: [vx, vy] }) => {
-    const linearX = mx / (window.innerWidth * 0.5);
-    const linearY = -(my / (window.innerWidth * 0.5));
+  const bind = useDrag(({ down, first, movement: [mx, my], velocity: [vx, vy] }) => {
+    if (first) {
+      grabX.current = x.get();
+      grabY.current = y.get();
+    }
+
+    const linearX = grabX.current + mx / (window.innerWidth * 0.5);
+    const linearY = grabY.current - my / (window.innerWidth * 0.5);
     const clampedY = Math.max(-Y_BORDER, Math.min(Y_BORDER, linearY));
 
     if (!down) {
       const momentumTarget = new Vector2(
-        linearX + vx * 0.1,
-        clampedY + vy * 0.002,
+        x.get() + vx * 0.1,
+        y.get() + vy * 0.002,
       );
 
       if (Math.abs(momentumTarget.x) > THRESHOLD) {
