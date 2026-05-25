@@ -1,6 +1,32 @@
-import { motion } from "framer-motion";
+import {
+  animate,
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useTransform,
+} from "framer-motion";
+import { useRef, useState } from "react";
 
 export default function App() {
+  const [players, setPlayers] = useState<Player[]>([
+    { name: "elias", yess: 0, nos: 0, streak: 0 },
+    { name: "roza", yess: 0, nos: 0, streak: 0 },
+    { name: "sunshine", yess: 0, nos: 0, streak: 0 },
+    { name: "pearl", yess: 0, nos: 0, streak: 0 },
+  ]);
+  const [cards, setCards] = useState<CardData[]>([
+    { text: "Pet Sunshine?" },
+    { text: "Pet Pearl?" },
+    { text: "Fly an airplane?" },
+    { text: "Go in a deep-water submarine?" },
+    { text: "Touch some grass? stinky ass." },
+  ]);
+  const [cardIndex, setCardIndex] = useState<number>(0);
+
+  const onSwipeEnd = (swipeDirection: "left" | "right") => {
+    setCardIndex((prevCardIdx) => (prevCardIdx + 1) % cards.length);
+  };
+
   return (
     <div
       style={{
@@ -20,25 +46,47 @@ export default function App() {
           top: "20px",
           left: "20px",
           fontSize: "12px",
-          color: "#888",
+          color: "#000",
         }}
       >
         prototype-{__GIT_COMMIT__}
       </div>
 
-      <Card id={0} url={""} setCards={false} cards={null} />
+      <AnimatePresence mode="wait">
+        <Card key={cardIndex} data={cards[cardIndex]} onSwipeEnd={onSwipeEnd} />
+      </AnimatePresence>
+
+      <DebugPlayers players={players} />
     </div>
   );
 }
 
-const Card = ({ id, url, setCards, cards }) => {
+const Card = ({ data, onSwipeEnd }) => {
+  const x = useMotionValue(0);
+
+  const backgroundColor = useTransform(
+    x,
+    [-150, 0, 150],
+    ["#ff4444", "#ffffff", "#44ff44"],
+  );
+
+  const handleDragEnd = () => {
+    const xVal = x.get();
+    if (xVal < -100) {
+      animate(x, -500, { duration: 0.3, ease: "easeOut" }).then(() => onSwipeEnd("left"));
+    } else if (xVal > 100) {
+      animate(x, 500, { duration: 0.3, ease: "easeOut" }).then(() => onSwipeEnd("right"));
+    } else {
+      animate(x, 0, { type: "spring" });
+    }
+  };
+
+
   return (
     <motion.div
       style={{
         width: "280px",
         height: "380px",
-        backgroundColor: "#fff",
-        color: "#000",
         borderRadius: "12px",
         boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
         display: "flex",
@@ -46,11 +94,49 @@ const Card = ({ id, url, setCards, cards }) => {
         justifyContent: "center",
         padding: "20px",
         textAlign: "center",
+        x,
+        backgroundColor,
       }}
+      initial={{ opacity: 0, x: 0, y: -500 }}
+      animate={{ opacity: 1, x: 0, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      draggable={false}
       drag={"x"}
-      dragSnapToOrigin
+      onDragEnd={handleDragEnd}
     >
-      <p style={{ fontSize: "18px" }}>Card {id}</p>
+      <p style={{ fontSize: "18px" }}>{data.text}</p>
     </motion.div>
   );
 };
+
+const DebugPlayers = ({ players }: { players: Player[] }) => {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        bottom: "20px",
+        left: "20px",
+        fontSize: "12px",
+        color: "#000",
+        lineHeight: "1.5",
+      }}
+    >
+      {players.map((p) => (
+        <div key={p.name}>
+          {p.name}=[yes(s): {p.yess} | no(s): {p.nos} | streak: {p.streak}]
+        </div>
+      ))}
+    </div>
+  );
+};
+
+interface Player {
+  name: string;
+  yess: number;
+  nos: number;
+  streak: number;
+}
+
+interface CardData {
+  text: string;
+}
