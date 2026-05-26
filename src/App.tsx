@@ -9,10 +9,10 @@ import { useRef, useState } from "react";
 
 export default function App() {
   const [players, setPlayers] = useState<Player[]>([
-    { name: "elias", yess: 0, nos: 0, streak: 0 },
-    { name: "roza", yess: 0, nos: 0, streak: 0 },
-    { name: "sunshine", yess: 0, nos: 0, streak: 0 },
-    { name: "pearl", yess: 0, nos: 0, streak: 0 },
+    { name: "Elias", yess: 0, nos: 0, streak: 0 },
+    { name: "Roza", yess: 0, nos: 0, streak: 0 },
+    { name: "Sunshine", yess: 0, nos: 0, streak: 0 },
+    { name: "Pearl", yess: 0, nos: 0, streak: 0 },
   ]);
   const [cards, setCards] = useState<CardData[]>([
     { text: "Pet Sunshine?" },
@@ -25,6 +25,16 @@ export default function App() {
   const [cardIdx, setCardIdx] = useState<number>(0);
 
   const onSwipeEnd = (swipeDirection: "left" | "right") => {
+    if (swipeDirection == "left") {
+      players[playerIdx].nos++;
+      players[playerIdx].streak = 0;
+    } else // "right"
+    {
+      players[playerIdx].yess++;
+      players[playerIdx].streak++;
+    }
+
+    // update next indices
     setCardIdx((prevCardIdx) => {
       const nextCardIdx = (prevCardIdx + 1) % cards.length;
       console.log(`Next card index: ${nextCardIdx}`);
@@ -61,6 +71,17 @@ export default function App() {
       >
         prototype-{__GIT_COMMIT__}
       </div>
+
+      {/* Current player name */}
+      <h1
+        style={{
+          position: "absolute",
+          top: "80px",
+          fontSize: "50px",
+        }}
+      >
+        {players[playerIdx].name}
+      </h1>
 
       <AnimatePresence mode="wait">
         <Card key={cardIdx} data={cards[cardIdx]} onSwipeEnd={onSwipeEnd} />
