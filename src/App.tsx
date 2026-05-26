@@ -15,7 +15,7 @@ export default function App() {
     { name: "Pearl", yess: 0, nos: 0, streak: 0 },
   ]);
   const [cards, setCards] = useState<CardData[]>([
-    { text: "Pet Sunshine?" },
+    { text: "Pet Sunshine? 🐈" },
     { text: "Pet Pearl?" },
     { text: "Fly an airplane?" },
     { text: "Go in a deep-water submarine?" },
@@ -37,12 +37,10 @@ export default function App() {
     // update next indices
     setCardIdx((prevCardIdx) => {
       const nextCardIdx = (prevCardIdx + 1) % cards.length;
-      console.log(`Next card index: ${nextCardIdx}`);
       return nextCardIdx;
     });
     setPlayerIdx((prevPlayerIdx) => {
       const nextPlayerIdx = (prevPlayerIdx + 1) % players.length;
-      console.log(`Next player: ${players[nextPlayerIdx].name}`);
       return nextPlayerIdx;
     });
   };
