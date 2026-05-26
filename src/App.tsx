@@ -21,10 +21,20 @@ export default function App() {
     { text: "Go in a deep-water submarine?" },
     { text: "Touch some grass? stinky ass." },
   ]);
-  const [cardIndex, setCardIndex] = useState<number>(0);
+  const [playerIdx, setPlayerIdx] = useState<number>(0);
+  const [cardIdx, setCardIdx] = useState<number>(0);
 
   const onSwipeEnd = (swipeDirection: "left" | "right") => {
-    setCardIndex((prevCardIdx) => (prevCardIdx + 1) % cards.length);
+    setCardIdx((prevCardIdx) => {
+      const nextCardIdx = (prevCardIdx + 1) % cards.length;
+      console.log(`Next card index: ${nextCardIdx}`);
+      return nextCardIdx;
+    });
+    setPlayerIdx((prevPlayerIdx) => {
+      const nextPlayerIdx = (prevPlayerIdx + 1) % players.length;
+      console.log(`Next player: ${players[nextPlayerIdx].name}`);
+      return nextPlayerIdx;
+    });
   };
 
   return (
@@ -53,10 +63,10 @@ export default function App() {
       </div>
 
       <AnimatePresence mode="wait">
-        <Card key={cardIndex} data={cards[cardIndex]} onSwipeEnd={onSwipeEnd} />
+        <Card key={cardIdx} data={cards[cardIdx]} onSwipeEnd={onSwipeEnd} />
       </AnimatePresence>
 
-      <DebugPlayers players={players} />
+      <DebugPlayers players={players} currentPlayerIdx={playerIdx} />
     </div>
   );
 }
@@ -73,14 +83,17 @@ const Card = ({ data, onSwipeEnd }) => {
   const handleDragEnd = () => {
     const xVal = x.get();
     if (xVal < -100) {
-      animate(x, -500, { duration: 0.3, ease: "easeOut" }).then(() => onSwipeEnd("left"));
+      animate(x, -500, { duration: 0.3, ease: "easeOut" }).then(() =>
+        onSwipeEnd("left"),
+      );
     } else if (xVal > 100) {
-      animate(x, 500, { duration: 0.3, ease: "easeOut" }).then(() => onSwipeEnd("right"));
+      animate(x, 500, { duration: 0.3, ease: "easeOut" }).then(() =>
+        onSwipeEnd("right"),
+      );
     } else {
       animate(x, 0, { type: "spring" });
     }
   };
-
 
   return (
     <motion.div
@@ -109,7 +122,13 @@ const Card = ({ data, onSwipeEnd }) => {
   );
 };
 
-const DebugPlayers = ({ players }: { players: Player[] }) => {
+const DebugPlayers = ({
+  players,
+  currentPlayerIdx,
+}: {
+  players: Player[];
+  currentPlayerIdx: number;
+}) => {
   return (
     <div
       style={{
@@ -121,8 +140,11 @@ const DebugPlayers = ({ players }: { players: Player[] }) => {
         lineHeight: "1.5",
       }}
     >
-      {players.map((p) => (
-        <div key={p.name}>
+      {players.map((p, idx) => (
+        <div
+          key={p.name}
+          style={{ fontWeight: idx === currentPlayerIdx ? "bold" : "normal" }}
+        >
           {p.name}=[yes(s): {p.yess} | no(s): {p.nos} | streak: {p.streak}]
         </div>
       ))}
