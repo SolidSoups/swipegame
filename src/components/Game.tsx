@@ -7,13 +7,15 @@ import {
 } from "framer-motion";
 import { useState } from "react";
 
-export default function Game() {
-  const [players, setPlayers] = useState<Player[]>([
-    { name: "Elias", yess: 0, nos: 0, streak: 0 },
-    { name: "Roza", yess: 0, nos: 0, streak: 0 },
-    { name: "Sunshine", yess: 0, nos: 0, streak: 0 },
-    { name: "Pearl", yess: 0, nos: 0, streak: 0 },
-  ]);
+export default function Game({ playerNames }: { playerNames: string[] }) {
+  const [players, setPlayers] = useState<Player[]>(
+    playerNames.map((name) => ({
+      name,
+      yess: 0,
+      nos: 0,
+      streak: 0,
+    }))
+  );
   const [cards, setCards] = useState<CardData[]>([
     { text: "Pet Sunshine? 🐈" },
     { text: "Pet Pearl?" },
