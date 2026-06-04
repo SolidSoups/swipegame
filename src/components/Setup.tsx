@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import Button from "./Button";
 import NameTextBox from "./NameTextBox";
 
@@ -12,6 +13,9 @@ export default function Setup({
   onPlay: (names: string[]) => void;
   onBack: () => void;
 }) {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const addButtonRef = useRef<HTMLButtonElement>(null);
+
   const handleNameChange = (index: number, newName: string) => {
     const updated = [...playerNames];
     updated[index] = newName;
@@ -24,6 +28,11 @@ export default function Setup({
 
   const handleAdd = () => {
     setPlayerNames([...playerNames, ""]);
+    setTimeout(() => {
+      if (addButtonRef.current) {
+        addButtonRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+      }
+    }, 0);
   };
 
   const handlePlay = () => {
@@ -69,14 +78,27 @@ export default function Setup({
           fontFamily: "Georgia, serif",
           fontSize: "64px",
           marginTop: "80px",
-          marginBottom: "20px",
+          marginBottom: "5px",
           color: "#000",
         }}
       >
         Setup
       </h1>
 
+      <p
+        style={{
+          fontFamily: "Georgia, serif",
+          fontSize: "16px",
+          color: "#666",
+          marginBottom: "8px",
+          fontStyle: "italic",
+        }}
+      >
+        Please type in the names of all players.
+      </p>
+
       <div
+        ref={scrollContainerRef}
         style={{
           display: "flex",
           flexDirection: "column",
@@ -92,6 +114,7 @@ export default function Setup({
           paddingBottom: "50px",
           maskImage: "linear-gradient(to bottom, transparent 0%, black 2%, black 98%, transparent 100%)",
           WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 2%, black 98%, transparent 100%)",
+          scrollBehavior: "smooth",
         }}
       >
         <style>{`
@@ -109,6 +132,7 @@ export default function Setup({
           />
         ))}
         <button
+          ref={addButtonRef}
           onClick={handleAdd}
           style={{
             width: "100%",
