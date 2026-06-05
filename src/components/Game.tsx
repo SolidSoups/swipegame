@@ -14,7 +14,7 @@ export default function Game({ playerNames }: { playerNames: string[] }) {
       yess: 0,
       nos: 0,
       streak: 0,
-    }))
+    })),
   );
   const [cards, setCards] = useState<CardData[]>([
     { text: "Pet Sunshine? 🐈" },
@@ -162,7 +162,7 @@ const DebugPlayers = ({
           key={p.name}
           style={{ fontWeight: idx === currentPlayerIdx ? "bold" : "normal" }}
         >
-          {p.name}=[yes(s): {p.yess} | no(s): {p.nos} | streak: {p.streak}]
+          {p.name} = {p.streak}
         </div>
       ))}
     </div>
