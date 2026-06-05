@@ -91,6 +91,7 @@ export default function Config({
               borderRadius: "4px",
               backgroundColor: "#fff",
               overflow: "hidden",
+              flexShrink: 0,
             }}
           >
             <button
